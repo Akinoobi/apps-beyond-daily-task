@@ -20,15 +20,15 @@ const HeaderNavigation = () => {
     shallow
   );
   const [dailyTaskState, setDailyTaskState] = useState({
+    id: Math.floor(Math.random() * 100),
     title: "",
     length: 0,
     theme: "",
   });
   const onSave = () => {
-    console.log("form", dailyTaskState);
     addTask(dailyTaskState);
+    setOpenModal(false)
   };
-  console.log("title", title, "length", length, "theme", theme, "form", form);
   return (
     <div
       role="navigation"
@@ -50,7 +50,7 @@ const HeaderNavigation = () => {
             type="text"
             name="title"
             placeholder="Title"
-            value={dailyTaskState.title}
+            value={dailyTaskState?.title}
             className={
               "placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md p-2"
             }
@@ -65,7 +65,7 @@ const HeaderNavigation = () => {
             type="number"
             name="length"
             placeholder="Length"
-            value={dailyTaskState.length}
+            value={dailyTaskState?.length}
             className={
               "placeholder-gray-500 border-2 text-black border-gray-700 rounded-md p-2"
             }
@@ -80,7 +80,7 @@ const HeaderNavigation = () => {
             type="text"
             name="theme"
             placeholder="theme"
-            value={dailyTaskState.theme}
+            value={dailyTaskState?.theme}
             className={
               "placeholder-gray-500 text-black border-2 border-gray-700 rounded-md p-2"
             }
@@ -94,7 +94,9 @@ const HeaderNavigation = () => {
           <div className="flex flex-row space-x-4">
             <button
               className="bg-transparent text-gray-700 px-5 py-2 rounded-md"
-              onClick={(e) => setOpenModal(false)}
+              onClick={(e) => {
+                setOpenModal(false)
+            }}
             >
               Cancel
             </button>
@@ -110,7 +112,15 @@ const HeaderNavigation = () => {
       </Modal>
       <div
         className="w-full flex  justify-end p-4"
-        onClick={() => setOpenModal(true)}
+        onClick={() => {
+            setDailyTaskState({
+                id: "",
+                title: "",
+                length: 0,
+                theme: ""
+            })
+            setOpenModal(true)
+        }}
       >
         <BsPlusLg size={30} color="blue" />
       </div>

@@ -6,16 +6,19 @@ export const DailyTaskStateManager = create((set) => ({
   theme: "",
   form: [
     {
+      id: Math.floor(Math.random() * 100),
       title: "Design the app",
       length: 120,
       theme: "bg-yellow-400",
     },
     {
+      id: Math.floor(Math.random() * 100),
       title: "Mobile devs sync",
       length: 30,
       theme: "bg-green-400",
     },
     {
+      id: Math.floor(Math.random() * 100),
       title: "Design the app",
       length: 60,
       theme: "bg-red-400 ",
@@ -25,7 +28,7 @@ export const DailyTaskStateManager = create((set) => ({
     set((state) => ({
       form: [
         {
-          id: Math.floor(Math.random() * 100),
+          id: payload.id,
           title: payload.title,
           length: payload.length,
           theme: payload.theme,
@@ -33,4 +36,5 @@ export const DailyTaskStateManager = create((set) => ({
         ...state.form
       ],
     })),
+
 }));
