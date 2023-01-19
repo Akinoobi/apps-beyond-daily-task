@@ -27,8 +27,6 @@ const HeaderNavigation = () => {
             role="navigation"
             className={`transition-all sticky top-0 z-50 bg-transparent text-white
         }`}
-            contentClass={`rounded-lg`}
-
         >
             <Modal
                 isOpen={openModal}
@@ -45,7 +43,7 @@ const HeaderNavigation = () => {
                         name="title"
                         placeholder="Title"
                         value={title}
-                        className={"placeholder-gray-500 border-2 border-gray-700 rounded-md"}
+                        className={"placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md"}
                         onChange={(e) => {
                             DailyTaskStateManager.setState({
                                 title: e.target.value
@@ -57,7 +55,7 @@ const HeaderNavigation = () => {
                         name="length"
                         placeholder="Length"
                         value={length}
-                        className={"placeholder-gray-500 border-2 border-gray-700 rounded-md"}
+                        className={"placeholder-gray-500 border-2 text-black border-gray-700 rounded-md"}
                         onChange={(e) => {
                             DailyTaskStateManager.setState({
                                 length: e.target.value
@@ -69,7 +67,7 @@ const HeaderNavigation = () => {
                         name="length"
                         placeholder="Length"
                         value={theme}
-                        className={"placeholder-gray-500 border-2 border-gray-700 rounded-md"}
+                        className={"placeholder-gray-500 text-black border-2 border-gray-700 rounded-md"}
                         onChange={(e) => {
                             DailyTaskStateManager.setState({
                                 theme: e.target.value
