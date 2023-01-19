@@ -8,12 +8,14 @@ import shallow from "zustand/shallow";
 const HeaderNavigation = () => {
   const [openModal, setOpenModal] = useState(false);
   const { width } = useWindowSize();
-  const [title, length, theme] = DailyTaskStateManager(
+  const [title, length, theme, form, addTask] = DailyTaskStateManager(
     (state) => [
       // state.cardValue,
       state.title,
       state.length,
       state.theme,
+      state.form,
+      state.addTask,
     ],
     shallow
   );
@@ -23,9 +25,10 @@ const HeaderNavigation = () => {
     theme: "",
   });
   const onSave = () => {
-    console.log("values", values);
+    console.log("form", dailyTaskState);
+    addTask(dailyTaskState);
   };
-  console.log("title", title, "length", length, "theme", theme);
+  console.log("title", title, "length", length, "theme", theme, "form", form);
   return (
     <div
       role="navigation"
@@ -98,6 +101,7 @@ const HeaderNavigation = () => {
             <button
               className="bg-blue-400 text-gray-700 px-5 py-2 rounded-md"
               htmlType="submit"
+              onClick={onSave}
             >
               Save
             </button>
