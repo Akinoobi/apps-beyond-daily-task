@@ -24,15 +24,15 @@ export default function DailyTaskEditPage({}) {
   const data = form && form.find((item) => item.id === Number(id));
   const [editDailyTask, setEditDailyTask] = useState({
     id: id,
-    title: data && data.title || "test",
-    length: data && data.length || "test",
-    theme: data && data.theme || "test",
+    title: (data && data.title) || "test",
+    length: (data && data.length) || "test",
+    theme: (data && data.theme) || "test",
   });
   const onSaveEdit = () => {
     editTask(editDailyTask);
     setOpenModal(false);
   };
-  console.log("test", data,"foram", form, "state", editDailyTask);
+  console.log("test", data, "foram", form, "state", editDailyTask);
   return (
     <>
       <Modal
@@ -137,7 +137,7 @@ export default function DailyTaskEditPage({}) {
           </div>
           <div className={`flex justify-center`}>
             <div
-              className={`${data?.theme} mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[500px] min-w-[350px] rounded-md`}
+              className={`${data?.theme} mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[350px] min-w-[350px] rounded-md`}
             >
               <div className="flex flex-row justify-between">
                 <div>
@@ -170,20 +170,30 @@ export default function DailyTaskEditPage({}) {
                 </div>
               </div>
               <div className="flex flex-col h-5/6 ">
-                <div className="flex flex-col my-auto items-center justify-center">
-                  <p className="text-[30px]">{form?.title || editDailyTask?.title}</p>
-                  <p>{`${data?.length.minutes}` + ":" + `${data?.length.seconds}`}</p>
+                <div className="flex flex-col my-auto items-center ">
+                  <p className="text-[40px] font-bold">
+                    {data?.title }
+                  </p>
+                  <div className="text-[40px] font-medium flex flex-row  justify-between w-1/2">
+                    <p >{`${data?.length.minutes}`}</p>
+                    <p className="-mt-1">{" : "}</p>
+                    <p>{`${data?.length.seconds}`}</p>
+                  </div>
+                  <div className="pl-1 -mt-3 flex flex-row items-center justify-between w-1/2">
+                    <p className="font-medium text-[15px]">Minutes</p>
+                    <p className="font-medium text-[15px]">Seconds</p>
+                  </div>
                 </div>
                 <div className="flex flex-row items-center gap-4 justify-center">
                   <BsStopCircle
-                       size={40}
-                       className={"cursor-pointer text-red-800"}
-                       // color="blue"
-                       onClick={() => {
-                         setOpenModal(true);
-                       }}
+                    size={40}
+                    className={"cursor-pointer text-red-800"}
+                    // color="blue"
+                    onClick={() => {
+                      setOpenModal(true);
+                    }}
                   />
-                  <BsPlayCircle 
+                  <BsPlayCircle
                     size={80}
                     className={"cursor-pointer"}
                     color="blue"
@@ -191,13 +201,13 @@ export default function DailyTaskEditPage({}) {
                       setOpenModal(true);
                     }}
                   />
-                  <AiOutlinePauseCircle 
-                      size={40}
-                      className={"cursor-pointer text-gray-400"}
-                      // color="blue"
-                      onClick={() => {
-                        setOpenModal(true);
-                      }}
+                  <AiOutlinePauseCircle
+                    size={40}
+                    className={"cursor-pointer text-gray-400"}
+                    // color="blue"
+                    onClick={() => {
+                      setOpenModal(true);
+                    }}
                   />
                 </div>
               </div>
