@@ -16,6 +16,10 @@ export default function DailyTaskEditPage({}) {
   const router = useRouter();
   const { id } = router.query;
   const [openModal, setOpenModal] = useState(false);
+  const [isTimerPlayed, setIsTimerPlayed] = useState({
+    play: false,
+    recentlyClicked: "",
+  });
   const { width } = useWindowSize();
   const [form, editTask] = DailyTaskStateManager(
     (state) => [state.form, state.editTask],
@@ -32,7 +36,63 @@ export default function DailyTaskEditPage({}) {
     editTask(editDailyTask);
     setOpenModal(false);
   };
-  console.log("test", data, "foram", form, "state", editDailyTask);
+  const startTimer = (status) => {
+    setIsTimerPlayed({
+      ...isTimerPlayed,
+      recentlyClicked: status
+    })
+    if (["resume", "playNow"].includes(status)) {
+      let minutes = editDailyTask.length.minutes;
+      let seconds = editDailyTask.length.seconds;
+      let minutesElapsed = editDailyTask.length.minutesElapsed;
+      let myInterval = setInterval(() => {
+        if (seconds > 0) {
+          seconds = Number(seconds - 1);
+          setEditDailyTask((prev) => {
+            let item = prev;
+            item.id = Number(id);
+            item.length.seconds = seconds;
+
+            return item;
+          });
+          editTask(editDailyTask);
+        }
+
+        if (seconds === 0) {
+          if (minutes === 0) {
+            clearInterval(myInterval);
+          } else {
+            // setEditDailyTask({
+            //   ...editDailyTask.length,
+            //   id: Number(editDailyTask.id),
+            //   length: {
+            //     minutes: Number(editDailyTask.length.minutes - 1),
+            //     seconds: 59,
+            //   },
+            // });
+            minutes = Number(minutes - 1);
+            seconds = 59;
+            minutesElapsed = Number(minutesElapsed + 1);
+            setEditDailyTask((prev) => {
+              let item = prev;
+              item.id = Number(id);
+              (item.length.minutes = minutes),
+                (item.length.seconds = seconds),
+                (item.length.minutesElapsed = minutesElapsed);
+
+              return item;
+            });
+            editTask(editDailyTask);
+          }
+        }
+        console.log("test", editDailyTask, "form", form);
+      }, 1000);
+    }
+    return () => {
+      clearInterval(myInterval);
+    };
+  };
+  console.log("isTimerPlayed", isTimerPlayed);
   return (
     <>
       <Modal
@@ -137,7 +197,7 @@ export default function DailyTaskEditPage({}) {
           </div>
           <div className={`flex justify-center`}>
             <div
-              className={`${data?.theme} mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[350px] min-w-[350px] rounded-md`}
+              className={`${data?.theme} mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[350px] min-w-[350px] rounded-lg`}
             >
               <div className="flex flex-row justify-between">
                 <div>
@@ -150,7 +210,9 @@ export default function DailyTaskEditPage({}) {
                       //   setOpenModal(true);
                       // }}
                     />
-                    <p className="text-[13px]">19</p>
+                    <p className="text-[13px]">
+                      {editDailyTask.length.minutesElapsed}
+                    </p>
                   </div>
                 </div>
                 <div>
@@ -167,17 +229,15 @@ export default function DailyTaskEditPage({}) {
                       {editDailyTask.length.minutes}
                     </p>
                   </div>
-                </div> 
+                </div>
               </div>
               <div className="flex flex-col h-5/6 ">
                 <div className="flex flex-col my-auto items-center ">
-                  <p className="text-[40px] font-bold">
-                    {data?.title }
-                  </p>
+                  <p className="text-[40px] font-bold">{data?.title}</p>
                   <div className="text-[40px] font-medium flex flex-row  justify-between w-1/2">
-                    <p >{`${data?.length.minutes}`}</p>
+                    <p>{`${editDailyTask?.length.minutes}`}</p>
                     <p className="-mt-1">{" : "}</p>
-                    <p>{`${data?.length.seconds}`}</p>
+                    <p>{`${editDailyTask?.length.seconds}`}</p>
                   </div>
                   <div className="pl-1 -mt-3 flex flex-row items-center justify-between w-1/2">
                     <p className="font-medium text-[15px]">Minutes</p>
@@ -190,7 +250,12 @@ export default function DailyTaskEditPage({}) {
                     className={"cursor-pointer text-red-800"}
                     // color="blue"
                     onClick={() => {
-                      setOpenModal(true);
+                      setIsTimerPlayed({
+                        ...isTimerPlayed,
+                        play: false,
+                        recentlyClicked: "pause",
+                      });
+                      startTimer("pause");
                     }}
                   />
                   <BsPlayCircle
@@ -198,7 +263,12 @@ export default function DailyTaskEditPage({}) {
                     className={"cursor-pointer"}
                     color="blue"
                     onClick={() => {
-                      setOpenModal(true);
+                      setIsTimerPlayed({
+                        ...isTimerPlayed,
+                        play: true,
+                        recentlyClicked: "playNow",
+                      });
+                      startTimer("playNow");
                     }}
                   />
                   <AiOutlinePauseCircle
@@ -206,7 +276,12 @@ export default function DailyTaskEditPage({}) {
                     className={"cursor-pointer text-gray-400"}
                     // color="blue"
                     onClick={() => {
-                      setOpenModal(true);
+                      setIsTimerPlayed({
+                        ...isTimerPlayed,
+                        play: true,
+                        recentlyClicked: "resume",
+                      });
+                      startTimer("resume");
                     }}
                   />
                 </div>

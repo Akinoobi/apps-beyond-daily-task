@@ -11,6 +11,7 @@ export const DailyTaskStateManager = create((set) => ({
       length: {
         minutes: 120,
         seconds: 60,
+        minutesElapsed: 0
       },
       theme: "bg-yellow-400",
     },
@@ -20,6 +21,7 @@ export const DailyTaskStateManager = create((set) => ({
       length: {
         minutes: 30,
         seconds: 60,
+        minutesElapsed: 0
       },
       theme: "bg-green-400",
     },
@@ -29,6 +31,7 @@ export const DailyTaskStateManager = create((set) => ({
       length: {
         minutes: 60,
         seconds: 60,
+        minutesElapsed: 0
       },
       theme: "bg-red-400 ",
     },
@@ -41,7 +44,8 @@ export const DailyTaskStateManager = create((set) => ({
           title: payload.title,
           length: {
             minutes: payload.length.minutes,
-            seconds: payload.length.seconds
+            seconds: payload.length.seconds,
+            minutesElapsed: payload.length.minutesElapsed,
           },
           theme: payload.theme,
         },
@@ -58,7 +62,8 @@ export const DailyTaskStateManager = create((set) => ({
         title: payload.title,
         length: {
           minutes: payload.length.minutes,
-          seconds: payload.length.seconds
+          seconds: payload.length.seconds,
+          minutesElapsed: payload.length.minutesElapsed,
         },
         theme: payload.theme,
       }
