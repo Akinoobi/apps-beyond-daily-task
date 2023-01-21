@@ -28,13 +28,26 @@ export const DailyTaskStateManager = create((set) => ({
     set((state) => ({
       form: [
         {
-          id: payload.id,
+          id: Math.floor(Math.random() * 100),
           title: payload.title,
           length: payload.length,
           theme: payload.theme,
         },
-        ...state.form
+        ...state.form,
       ],
     })),
-
+  editTask: (payload) => 
+  set((state) => 
+   ({
+    form: state.form.map((item) => {
+      if (item.id !== Number(payload.id)) return item
+      return {
+        ...item,
+        title: payload.title,
+        length: payload.length,
+        theme: payload.theme,
+      }
+    })
+  })
+  )
 }));

@@ -1,9 +1,11 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { AiOutlineRight, AiOutlineClockCircle } from "react-icons/ai";
 import { shallow } from "zustand/shallow";
 import { DailyTaskStateManager } from "../api/DailyTaskStateManager";
 
 const DailyTaskList = () => {
+  const router = useRouter();
   const [form] = DailyTaskStateManager((state) => [state.form], shallow);
   return (
     <>
@@ -16,16 +18,21 @@ const DailyTaskList = () => {
               return (
                 <div
                   key={index}
-                  className={`flex flex-row ${item.theme} mb-6 w-3/4 p-4 rounded-md justify-between border-2 border-gray-300`}
+                  className={`flex flex-row ${item.theme} mb-6 w-3/4 p-4 rounded-md justify-between border-2 border-red-900`}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    router.push(`/daily-task/${item.id}`)}
+                  }
                 >
-                  <p className="1/2 ">{item.title}</p>
-                  <div className="1/4 flex flex-row items-center justify-end gap-2">
-                    {item.length}{" "}
+                  <p className="w-1/2 ">{item.title + "asdasda"}</p>
+                  <div className="w-1/4 flex flex-row items-center justify-end gap-2">
+                    {item.length}
                     <span>
                       <AiOutlineClockCircle />
                     </span>
                   </div>
-                  <span className="1/4">
+
+                  <span className="w-1/4  flex justify-end">
                     <AiOutlineRight
                       size={20}
                       title={"Want to start the timer?"}

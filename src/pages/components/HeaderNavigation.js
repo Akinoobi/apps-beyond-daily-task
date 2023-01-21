@@ -8,27 +8,29 @@ import shallow from "zustand/shallow";
 const HeaderNavigation = () => {
   const [openModal, setOpenModal] = useState(false);
   const { width } = useWindowSize();
-  const [title, length, theme, form, addTask] = DailyTaskStateManager(
+  const [ addTask] = DailyTaskStateManager(
     (state) => [
       // state.cardValue,
-      state.title,
-      state.length,
-      state.theme,
-      state.form,
+
       state.addTask,
     ],
     shallow
   );
   const [dailyTaskState, setDailyTaskState] = useState({
-    id: Math.floor(Math.random() * 100),
     title: "",
     length: 0,
     theme: "",
   });
   const onSave = () => {
     addTask(dailyTaskState);
-    setOpenModal(false)
+    setOpenModal(false);
   };
+  console.log(
+    "dailyTaskState",
+    dailyTaskState,
+    "",
+    Math.floor(Math.random() * 100)
+  );
   return (
     <div
       role="navigation"
@@ -41,9 +43,9 @@ const HeaderNavigation = () => {
         closablex
         contentClass={`rounded-lg`}
         width={width}
-        title={"Configure Task"}
+        title={"Add Task"}
         headerClass={"text-black mx-auto"}
-        subtitle={"You can edit your task here."}
+        subtitle={"Add your task here to monitor your works."}
       >
         <div className="flex flex-col w-full h-full max-h-[300px] min-h-[300px] max-w-[500px] min-w-[500px] justify-center items-center gap-4">
           <input
@@ -95,14 +97,13 @@ const HeaderNavigation = () => {
             <button
               className="bg-transparent text-gray-700 px-5 py-2 rounded-md"
               onClick={(e) => {
-                setOpenModal(false)
-            }}
+                setOpenModal(false);
+              }}
             >
               Cancel
             </button>
             <button
               className="bg-blue-400 text-gray-700 px-5 py-2 rounded-md"
-              htmlType="submit"
               onClick={onSave}
             >
               Save
@@ -110,19 +111,19 @@ const HeaderNavigation = () => {
           </div>
         </div>
       </Modal>
-      <div
-        className="w-full flex  justify-end p-4"
-        onClick={() => {
+      <div className="w-full flex  justify-end p-4" onClick={() => {}}>
+        <BsPlusLg
+          size={30}
+          color="blue"
+          onClick={() => {
             setDailyTaskState({
-                id: "",
-                title: "",
-                length: 0,
-                theme: ""
-            })
-            setOpenModal(true)
-        }}
-      >
-        <BsPlusLg size={30} color="blue" />
+              title: "",
+              length: 0,
+              theme: "",
+            });
+            setOpenModal(true);
+          }}
+        />
       </div>
     </div>
   );
