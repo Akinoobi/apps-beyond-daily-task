@@ -24,9 +24,9 @@ const DailyTaskList = () => {
                     router.push(`/daily-task/${item.id}`)}
                   }
                 >
-                  <p className="w-1/2 ">{item.title + "asdasda"}</p>
+                  <p className="w-1/2 ">{item.title}</p>
                   <div className="w-1/4 flex flex-row items-center justify-end gap-2">
-                    {item.length}
+                    {item.length.minutes}
                     <span>
                       <AiOutlineClockCircle />
                     </span>

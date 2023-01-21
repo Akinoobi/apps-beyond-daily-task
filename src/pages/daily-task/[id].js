@@ -2,11 +2,16 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { shallow } from "zustand/shallow";
 import { DailyTaskStateManager } from "../api/DailyTaskStateManager";
-import { AiFillEdit } from "react-icons/ai";
+import { AiFillEdit, AiOutlinePauseCircle } from "react-icons/ai";
 import Modal from "../components/Modal";
 import { useWindowSize } from "react-use";
 import { BiArrowBack } from "react-icons/bi";
-import { BsHourglassBottom, BsHourglassTop } from "react-icons/bs";
+import {
+  BsHourglassBottom,
+  BsHourglassTop,
+  BsPlayCircle,
+  BsStopCircle,
+} from "react-icons/bs";
 export default function DailyTaskEditPage({}) {
   const router = useRouter();
   const { id } = router.query;
@@ -62,14 +67,17 @@ export default function DailyTaskEditPage({}) {
             type="number"
             name="length"
             placeholder="Length"
-            value={editDailyTask?.length}
+            value={editDailyTask?.length.minutes}
             className={
               "placeholder-gray-500 border-2 text-black border-gray-700 rounded-md p-2"
             }
             onChange={(e) => {
               setEditDailyTask({
                 ...editDailyTask,
-                length: e.target.value,
+                length: {
+                  ...editDailyTask.length.seconds,
+                  minutes: e.target.value,
+                },
               });
             }}
           />
@@ -140,9 +148,9 @@ export default function DailyTaskEditPage({}) {
                     <BsHourglassBottom
                       size={20}
                       color="black"
-                      onClick={() => {
-                        setOpenModal(true);
-                      }}
+                      // onClick={() => {
+                      //   setOpenModal(true);
+                      // }}
                     />
                     <p className="text-[13px]">19</p>
                   </div>
@@ -153,18 +161,49 @@ export default function DailyTaskEditPage({}) {
                     <BsHourglassTop
                       size={20}
                       color="black"
-                      onClick={() => {
-                        setOpenModal(true);
-                      }}
+                      // onClick={() => {
+                      //   setOpenModal(true);
+                      // }}
                     />
-                    <p className="text-[13px]">101</p>
+                    <p className="text-[13px]">
+                      {editDailyTask.length.minutes}
+                    </p>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col h-full items-center justify-center">
-                <p className="text-[30px]">{data?.title}</p>
-                <p>{data?.length}</p>
+              <div className="flex flex-col h-5/6 ">
+                <div className="flex flex-col my-auto items-center justify-center">
+                  <p className="text-[30px]">{data?.title}</p>
+                  <p>{data?.length.minutes}</p>
+                </div>
+                <div className="flex flex-row items-center gap-4 justify-center">
+                  <BsStopCircle
+                       size={40}
+                       className={"cursor-pointer text-red-800"}
+                       // color="blue"
+                       onClick={() => {
+                         setOpenModal(true);
+                       }}
+                  />
+                  <BsPlayCircle 
+                    size={80}
+                    className={"cursor-pointer"}
+                    color="blue"
+                    onClick={() => {
+                      setOpenModal(true);
+                    }}
+                  />
+                  <AiOutlinePauseCircle 
+                      size={40}
+                      className={"cursor-pointer text-gray-400"}
+                      // color="blue"
+                      onClick={() => {
+                        setOpenModal(true);
+                      }}
+                  />
+                </div>
               </div>
+
               {/* <p>{data?.theme}</p> */}
             </div>
           </div>
