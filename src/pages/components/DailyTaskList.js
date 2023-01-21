@@ -19,7 +19,7 @@ const DailyTaskList = () => {
               return (
                 <div
                   key={index}
-                  className={`flex flex-row ${item.theme} mb-6 w-3/4 p-4 rounded-md justify-between border-2 border-red-900`}
+                  className={`flex flex-row ${item.theme} mb-6 w-3/4 p-4 rounded-md justify-between border-2 border-red-200`}
                   onClick={(e) => {
                     e.preventDefault()
                     router.push(`/daily-task/${item.id}`)}
