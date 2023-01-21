@@ -167,7 +167,7 @@ export default function DailyTaskEditPage({}) {
                       {editDailyTask.length.minutes}
                     </p>
                   </div>
-                </div>
+                </div> 
               </div>
               <div className="flex flex-col h-5/6 ">
                 <div className="flex flex-col my-auto items-center ">
