@@ -18,7 +18,10 @@ const HeaderNavigation = () => {
   );
   const [dailyTaskState, setDailyTaskState] = useState({
     title: "",
-    length: 0,
+    length: {
+      minutes: null,
+      seconds: 60,
+    },
     theme: "",
   });
   const onSave = () => {
@@ -67,14 +70,18 @@ const HeaderNavigation = () => {
             type="number"
             name="length"
             placeholder="Length"
-            value={dailyTaskState?.length}
+            value={dailyTaskState?.length.minutes}
             className={
               "placeholder-gray-500 border-2 text-black border-gray-700 rounded-md p-2"
             }
             onChange={(e) => {
               setDailyTaskState({
                 ...dailyTaskState,
-                length: e.target.value,
+                length: {
+                  
+                  minutes: Number(e.target.value),
+                  seconds: 60,
+                },
               });
             }}
           />
@@ -118,7 +125,10 @@ const HeaderNavigation = () => {
           onClick={() => {
             setDailyTaskState({
               title: "",
-              length: 0,
+              length: {
+                minutes: null,
+                seconds: 60,
+              },
               theme: "",
             });
             setOpenModal(true);

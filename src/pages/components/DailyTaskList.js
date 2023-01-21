@@ -7,6 +7,7 @@ import { DailyTaskStateManager } from "../api/DailyTaskStateManager";
 const DailyTaskList = () => {
   const router = useRouter();
   const [form] = DailyTaskStateManager((state) => [state.form], shallow);
+  console.log("form in list", form);
   return (
     <>
       <h1 className="text-center text-[50px] mb-10 font-bold text-gray-800">

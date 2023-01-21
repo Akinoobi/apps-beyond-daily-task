@@ -75,8 +75,8 @@ export default function DailyTaskEditPage({}) {
               setEditDailyTask({
                 ...editDailyTask,
                 length: {
-                  ...editDailyTask.length.seconds,
                   minutes: e.target.value,
+                  seconds: editDailyTask.length.seconds,
                 },
               });
             }}
@@ -174,7 +174,7 @@ export default function DailyTaskEditPage({}) {
               <div className="flex flex-col h-5/6 ">
                 <div className="flex flex-col my-auto items-center justify-center">
                   <p className="text-[30px]">{data?.title}</p>
-                  <p>{data?.length.minutes}</p>
+                  <p>{`${data?.length.minutes}` + ":" + `${data?.length.seconds}`}</p>
                 </div>
                 <div className="flex flex-row items-center gap-4 justify-center">
                   <BsStopCircle
