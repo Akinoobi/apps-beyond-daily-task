@@ -24,17 +24,15 @@ export default function DailyTaskEditPage({}) {
   const data = form && form.find((item) => item.id === Number(id));
   const [editDailyTask, setEditDailyTask] = useState({
     id: id,
-    title: data.title,
-    length: data.length,
-    theme: data.theme,
+    title: data && data.title || "test",
+    length: data && data.length || "test",
+    theme: data && data.theme || "test",
   });
-  useEffect(() => {
-    console.log("form", form);
-  }, [form]);
   const onSaveEdit = () => {
     editTask(editDailyTask);
     setOpenModal(false);
   };
+  console.log("test", data,"foram", form, "state", editDailyTask);
   return (
     <>
       <Modal
@@ -52,7 +50,7 @@ export default function DailyTaskEditPage({}) {
             type="text"
             name="title"
             placeholder="Title"
-            value={editDailyTask?.title}
+            value={editDailyTask.title}
             className={
               "placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md p-2"
             }
@@ -67,7 +65,7 @@ export default function DailyTaskEditPage({}) {
             type="number"
             name="length"
             placeholder="Length"
-            value={editDailyTask?.length.minutes}
+            value={editDailyTask.length.minutes}
             className={
               "placeholder-gray-500 border-2 text-black border-gray-700 rounded-md p-2"
             }
@@ -85,7 +83,7 @@ export default function DailyTaskEditPage({}) {
             type="text"
             name="theme"
             placeholder="theme"
-            value={editDailyTask?.theme}
+            value={editDailyTask.theme}
             className={
               "placeholder-gray-500 text-black border-2 border-gray-700 rounded-md p-2"
             }
@@ -139,7 +137,7 @@ export default function DailyTaskEditPage({}) {
           </div>
           <div className={`flex justify-center`}>
             <div
-              className={`${data.theme} mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[500px] min-w-[350px] rounded-md`}
+              className={`${data?.theme} mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[500px] min-w-[350px] rounded-md`}
             >
               <div className="flex flex-row justify-between">
                 <div>
@@ -173,7 +171,7 @@ export default function DailyTaskEditPage({}) {
               </div>
               <div className="flex flex-col h-5/6 ">
                 <div className="flex flex-col my-auto items-center justify-center">
-                  <p className="text-[30px]">{data?.title}</p>
+                  <p className="text-[30px]">{form?.title || editDailyTask?.title}</p>
                   <p>{`${data?.length.minutes}` + ":" + `${data?.length.seconds}`}</p>
                 </div>
                 <div className="flex flex-row items-center gap-4 justify-center">

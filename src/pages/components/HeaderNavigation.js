@@ -28,12 +28,7 @@ const HeaderNavigation = () => {
     addTask(dailyTaskState);
     setOpenModal(false);
   };
-  console.log(
-    "dailyTaskState",
-    dailyTaskState,
-    "",
-    Math.floor(Math.random() * 100)
-  );
+
   return (
     <div
       role="navigation"
