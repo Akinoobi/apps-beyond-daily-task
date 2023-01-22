@@ -4,11 +4,13 @@ import Modal from "./Modal";
 import { useWindowSize } from "react-use";
 import { DailyTaskStateManager } from "../api/DailyTaskStateManager";
 import shallow from "zustand/shallow";
+import Select from "react-select";
+import InputColor from "react-input-color";
 
 const HeaderNavigation = () => {
   const [openModal, setOpenModal] = useState(false);
   const { width } = useWindowSize();
-  const [ addTask] = DailyTaskStateManager(
+  const [addTask] = DailyTaskStateManager(
     (state) => [
       // state.cardValue,
 
@@ -52,7 +54,7 @@ const HeaderNavigation = () => {
             placeholder="Title"
             value={dailyTaskState?.title}
             className={
-              "placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md p-2"
+              "placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md p-2 w-1/2"
             }
             onChange={(e) => {
               setDailyTaskState({
@@ -67,34 +69,41 @@ const HeaderNavigation = () => {
             placeholder="Length"
             value={dailyTaskState?.length.minutes}
             className={
-              "placeholder-gray-500 border-2 text-black border-gray-700 rounded-md p-2"
+              "placeholder-gray-500 border-2 text-black w-1/2 border-gray-700 rounded-md p-2"
             }
             onChange={(e) => {
               setDailyTaskState({
                 ...dailyTaskState,
                 length: {
-                  
                   minutes: Number(e.target.value),
                   seconds: 60,
                 },
               });
             }}
           />
-          <input
-            type="text"
-            name="theme"
-            placeholder="theme"
-            value={dailyTaskState?.theme}
-            className={
-              "placeholder-gray-500 text-black border-2 border-gray-700 rounded-md p-2"
-            }
-            onChange={(e) => {
-              setDailyTaskState({
-                ...dailyTaskState,
-                theme: e.target.value,
-              });
-            }}
-          />
+          <div className="flex flex-row items-center transition-all border-2 border-gray-700 rounded-md p-2">
+            <input
+              type="text"
+              name="theme"
+              placeholder="theme"
+              value={dailyTaskState?.theme}
+              className={
+                "appearance-none placeholder-gray-500 border-none bg-transparent text-black "
+              }
+            />
+            <InputColor
+              initialValue="#5e72e4"
+              onChange={(e) => {
+                console.log("color target", e);
+                setDailyTaskState({
+                  ...dailyTaskState,
+                  theme:  e.rgba,
+                });
+              }}
+              className="transition"
+              placement="bottom"
+            />
+          </div>
           <div className="flex flex-row space-x-4">
             <button
               className="bg-transparent text-gray-700 px-5 py-2 rounded-md"

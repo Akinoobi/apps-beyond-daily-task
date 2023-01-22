@@ -13,7 +13,7 @@ export const DailyTaskStateManager = create((set) => ({
         seconds: 60,
         minutesElapsed: 0
       },
-      theme: "bg-yellow-400",
+      theme: "rgba(148,147,141,1)",
     },
     {
       id: Math.floor(Math.random() * 100),
@@ -23,7 +23,7 @@ export const DailyTaskStateManager = create((set) => ({
         seconds: 60,
         minutesElapsed: 0
       },
-      theme: "bg-green-400",
+      theme: "rgba(230,183,177,1)",
     },
     {
       id: Math.floor(Math.random() * 100),
@@ -33,7 +33,7 @@ export const DailyTaskStateManager = create((set) => ({
         seconds: 60,
         minutesElapsed: 0
       },
-      theme: "bg-red-400 ",
+      theme: "rgba(219,195,232,1)",
     },
   ],
   addTask: (payload) =>

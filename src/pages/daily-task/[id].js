@@ -197,7 +197,10 @@ export default function DailyTaskEditPage({}) {
           </div>
           <div className={`flex justify-center`}>
             <div
-              className={`${data?.theme} mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[350px] min-w-[350px] rounded-lg`}
+              className={`mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[350px] min-w-[350px] rounded-lg`}
+              style={{
+                background: `${data?.theme}`
+              }}
             >
               <div className="flex flex-row justify-between">
                 <div>
