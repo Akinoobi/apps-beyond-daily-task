@@ -54,7 +54,7 @@ const HeaderNavigation = () => {
             placeholder="Title"
             value={dailyTaskState?.title}
             className={
-              "placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md p-2 w-1/2"
+              "placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md p-2 w-2/3"
             }
             onChange={(e) => {
               setDailyTaskState({
@@ -69,7 +69,7 @@ const HeaderNavigation = () => {
             placeholder="Length"
             value={dailyTaskState?.length.minutes}
             className={
-              "placeholder-gray-500 border-2 text-black w-1/2 border-gray-700 rounded-md p-2"
+              "placeholder-gray-500 border-2 text-black border-gray-700 rounded-md p-2 w-2/3"
             }
             onChange={(e) => {
               setDailyTaskState({
@@ -81,7 +81,7 @@ const HeaderNavigation = () => {
               });
             }}
           />
-          <div className="flex flex-row items-center transition-all border-2 border-gray-700 rounded-md p-2">
+          <div className="flex flex-row items-center transition-all border-2 border-gray-700 rounded-md p-2  w-2/3">
             <input
               type="text"
               name="theme"

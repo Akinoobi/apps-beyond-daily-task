@@ -1,9 +1,6 @@
 import { create } from "zustand";
 
 export const DailyTaskStateManager = create((set) => ({
-  title: "",
-  length: 0,
-  theme: "",
   form: [
     {
       id: Math.floor(Math.random() * 100),

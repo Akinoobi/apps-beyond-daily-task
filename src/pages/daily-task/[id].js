@@ -12,6 +12,7 @@ import {
   BsPlayCircle,
   BsStopCircle,
 } from "react-icons/bs";
+import InputColor from "react-input-color";
 export default function DailyTaskEditPage({}) {
   const router = useRouter();
   const { id } = router.query;
@@ -112,7 +113,7 @@ export default function DailyTaskEditPage({}) {
             placeholder="Title"
             value={editDailyTask.title}
             className={
-              "placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md p-2"
+              "placeholder-gray-500  text-black  border-2 border-gray-700 rounded-md p-2 w-2/3"
             }
             onChange={(e) => {
               setEditDailyTask({
@@ -127,7 +128,7 @@ export default function DailyTaskEditPage({}) {
             placeholder="Length"
             value={editDailyTask.length.minutes}
             className={
-              "placeholder-gray-500 border-2 text-black border-gray-700 rounded-md p-2"
+              "placeholder-gray-500 border-2 text-black border-gray-700 rounded-md p-2 w-2/3"
             }
             onChange={(e) => {
               setEditDailyTask({
@@ -139,21 +140,28 @@ export default function DailyTaskEditPage({}) {
               });
             }}
           />
-          <input
-            type="text"
-            name="theme"
-            placeholder="theme"
-            value={editDailyTask.theme}
-            className={
-              "placeholder-gray-500 text-black border-2 border-gray-700 rounded-md p-2"
-            }
-            onChange={(e) => {
-              setEditDailyTask({
-                ...editDailyTask,
-                theme: e.target.value,
-              });
-            }}
-          />
+            <div className="flex flex-row items-center transition-all border-2 border-gray-700 rounded-md p-2 w-2/3">
+            <input
+              type="text"
+              name="theme"
+              placeholder="theme"
+              value={editDailyTask?.theme}
+              className={
+                "appearance-none placeholder-gray-500 border-none bg-transparent text-black "
+              }
+            />
+            <InputColor
+              initialValue="#5e72e4"
+              onChange={(e) => {
+                setEditDailyTask({
+                  ...editDailyTask,
+                  theme:  e.rgba,
+                });
+              }}
+              className="transition"
+              placement="bottom"
+            />
+          </div>
           <div className="flex flex-row space-x-4">
             <button
               className="bg-transparent text-gray-700 px-5 py-2 rounded-md"
