@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import Modal from "./Modal";
 import { useWindowSize } from "react-use";
@@ -18,6 +18,8 @@ const HeaderNavigation = () => {
     ],
     shallow
   );
+  const [error, setError] = useState([]);
+
   const [dailyTaskState, setDailyTaskState] = useState({
     title: "",
     length: {
@@ -27,10 +29,55 @@ const HeaderNavigation = () => {
     theme: "",
   });
   const onSave = () => {
+    if (!dailyTaskState.title) {
+      setError((prev) => {
+        let temp = [...prev];
+        if (
+          prev?.find(
+            (item) => item.errorName !== "title" && temp.length === 1
+          ) ||
+          !temp.length
+        ) {
+          temp.push({
+            errorName: "title",
+            message: `Please input title length equivalent to requirement (15).`,
+          });
+        }
+        return temp;
+      });
+    }
+    if (!dailyTaskState.length.minutes || dailyTaskState.length.minutes === 0) {
+      setError((prev) => {
+        let temp = [...prev];
+        if (
+          prev?.find(
+            (item) => item.errorName !== "length" && temp.length === 1
+          ) ||
+          !temp.length
+        ) {
+          temp.push({
+            errorName: "length",
+            message: `Please input length that more than 0.`,
+          });
+        }
+        return temp;
+      });
+      return;
+    }
+
     addTask(dailyTaskState);
     setOpenModal(false);
   };
-
+  useEffect(() => {
+    window.addEventListener("beforeunload", alertUser);
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, []);
+  const alertUser = (e) => {
+    e.preventDefault();
+    e.returnValue = "";
+  };
   return (
     <div
       role="navigation"
@@ -61,8 +108,30 @@ const HeaderNavigation = () => {
                 ...dailyTaskState,
                 title: e.target.value,
               });
+              if (e.target.value.length > 14 || !e.target.value) {
+                setError((prev) => {
+                  let temp = [...prev];
+                  if (
+                    prev?.find(
+                      (item) => item.errorName !== "title" && temp.length === 1
+                    ) ||
+                    !temp.length
+                  ) {
+                    temp.push({
+                      errorName: "title",
+                      message: `Please input title length equivalent to requirement (15).`,
+                    });
+                  }
+                  return temp;
+                });
+              }
             }}
           />
+          {error.find((item) => item.errorName === "title") && (
+            <p className="mt-1 text-xs text-red-500">
+              {error.find((item) => item.errorName === "title").message}
+            </p>
+          )}
           <input
             type="number"
             name="length"
@@ -76,17 +145,21 @@ const HeaderNavigation = () => {
                 ...dailyTaskState,
                 length: {
                   minutes: Number(e.target.value),
-                  seconds: 60,
+                  seconds: 0,
                 },
               });
             }}
           />
-          <div className="flex flex-row items-center transition-all border-2 border-gray-700 rounded-md p-2  w-2/3">
+          {error.find((item) => item.errorName === "length") && (
+            <p className="mt-1 text-xs text-red-500">
+              {error.find((item) => item.errorName === "length").message}
+            </p>
+          )}
+          <div className="flex flex-row justify-between transition-all border-2 border-gray-700 rounded-md p-2  w-2/3">
             <input
               type="text"
               name="theme"
               placeholder="theme"
-              value={dailyTaskState?.theme}
               className={
                 "appearance-none placeholder-gray-500 border-none bg-transparent text-black "
               }
@@ -94,10 +167,9 @@ const HeaderNavigation = () => {
             <InputColor
               initialValue="#5e72e4"
               onChange={(e) => {
-                console.log("color target", e);
                 setDailyTaskState({
                   ...dailyTaskState,
-                  theme:  e.rgba,
+                  theme: e.rgba,
                 });
               }}
               className="transition"

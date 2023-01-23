@@ -29,18 +29,56 @@ export default function DailyTaskEditPage({}) {
   const data = form && form.find((item) => item.id === Number(id));
   const [editDailyTask, setEditDailyTask] = useState({
     id: id,
-    title: (data && data.title) || "test",
-    length: (data && data.length) || "test",
-    theme: (data && data.theme) || "test",
+    title: (data && data.title) || "",
+    length: (data && data.length) || "",
+    theme: (data && data.theme) || "",
   });
-  const onSaveEdit = () => {
-    editTask(editDailyTask);
-    setOpenModal(false);
-  };
   let previousTime = useRef(0);
   let streamDuration = useRef(0);
   let requestAnimationFrameId = useRef(null);
-  const [renderedDuration, setRenderedStreamDuration] = useState()
+  const [renderedDuration, setRenderedStreamDuration] = useState();
+  const [error, setError] = useState([]);
+
+  const onSaveEdit = () => {
+    if (!editDailyTask.title) {
+      setError((prev) => {
+        let temp = [...prev];
+        if (
+          prev?.find(
+            (item) => item.errorName !== "title" && temp.length === 1
+          ) ||
+          !temp.length
+        ) {
+          temp.push({
+            errorName: "title",
+            message: `Please input title length equivalent to requirement (15).`,
+          });
+        }
+        return temp;
+      });
+    }
+    if (!editDailyTask.length.minutes || editDailyTask.length.minutes === 0) {
+      setError((prev) => {
+        let temp = [...prev];
+        if (
+          prev?.find(
+            (item) => item.errorName !== "length" && temp.length === 1
+          ) ||
+          !temp.length
+        ) {
+          temp.push({
+            errorName: "length",
+            message: `Please input length that more than 0.`,
+          });
+        }
+        return temp;
+      });
+      return;
+    }
+
+    editTask(editDailyTask);
+    setOpenModal(false);
+  };
 
   const updateTimer = useCallback(() => {
     let minutes = editDailyTask.length.minutes;
@@ -53,16 +91,19 @@ export default function DailyTaskEditPage({}) {
       const formattedStreamDuration = new Date(streamDuration.current * 1000)
         .toISOString()
         .substr(11, 8);
-      setRenderedStreamDuration(formattedStreamDuration)
+      setRenderedStreamDuration(formattedStreamDuration);
       previousTime.current = now;
-      seconds = seconds - 1
-      setEditDailyTask((prev) => {
-        let item = prev;
-        item.id = Number(id);
-        item.length.seconds = seconds;
+      if (seconds > 0) {
+        seconds = seconds - 1;
 
-        return item;
-      });
+        setEditDailyTask((prev) => {
+          let item = prev;
+          item.id = Number(id);
+          item.length.seconds = seconds;
+
+          return item;
+        });
+      }
       if (seconds === 0) {
         minutes = Number(minutes - 1);
         seconds = 59;
@@ -70,15 +111,14 @@ export default function DailyTaskEditPage({}) {
         setEditDailyTask((prev) => {
           let item = prev;
           item.id = Number(id);
-          item.length.minutes = minutes,
-          item.length.seconds = seconds,
-          item.length.minutesElapsed = minutesElapsed
+          (item.length.minutes = minutes),
+            (item.length.seconds = seconds),
+            (item.length.minutesElapsed = minutesElapsed);
 
           return item;
         });
       }
       editTask(editDailyTask);
-
     }
     requestAnimationFrameId.current = requestAnimationFrame(updateTimer);
   }, []);
@@ -88,16 +128,24 @@ export default function DailyTaskEditPage({}) {
   }, [updateTimer]);
   useEffect(() => {
     if (isTimerPlayed.recentlyClicked !== "pause") {
-      startTimer()
+      startTimer();
     }
     if (isTimerPlayed.recentlyClicked === "pause") {
       streamDuration.current = 0;
       cancelAnimationFrame(requestAnimationFrameId.current);
       setRenderedStreamDuration("00:00:00");
     }
-
-  }, [isTimerPlayed.recentlyClicked])
-  console.log("isTimerPlayed.recentlyClicked", isTimerPlayed.recentlyClicked);
+  }, [isTimerPlayed.recentlyClicked]);
+  useEffect(() => {
+    window.addEventListener("beforeunload", alertUser);
+    return () => {
+      window.removeEventListener("beforeunload", alertUser);
+    };
+  }, []);
+  const alertUser = (e) => {
+    e.preventDefault();
+    e.returnValue = "";
+  };
   return (
     <>
       <Modal
@@ -124,8 +172,30 @@ export default function DailyTaskEditPage({}) {
                 ...editDailyTask,
                 title: e.target.value,
               });
+              if (e.target.value.length > 14 || !e.target.value) {
+                setError((prev) => {
+                  let temp = [...prev];
+                  if (
+                    prev?.find(
+                      (item) => item.errorName !== "title" && temp.length === 1
+                    ) ||
+                    !temp.length
+                  ) {
+                    temp.push({
+                      errorName: "title",
+                      message: `Please input title length equivalent to requirement (15).`,
+                    });
+                  }
+                  return temp;
+                });
+              }
             }}
           />
+          {error.find((item) => item.errorName === "title") && (
+            <p className="mt-1 text-xs text-red-500">
+              {error.find((item) => item.errorName === "title").message}
+            </p>
+          )}
           <input
             type="number"
             name="length"
@@ -138,12 +208,17 @@ export default function DailyTaskEditPage({}) {
               setEditDailyTask({
                 ...editDailyTask,
                 length: {
-                  minutes: e.target.value,
+                  minutes: Number(e.target.value),
                   seconds: editDailyTask.length.seconds,
                 },
               });
             }}
           />
+          {error.find((item) => item.errorName === "length") && (
+            <p className="mt-1 text-xs text-red-500">
+              {error.find((item) => item.errorName === "length").message}
+            </p>
+          )}
           <div className="flex flex-row items-center transition-all border-2 border-gray-700 rounded-md p-2 w-2/3">
             <input
               type="text"
@@ -207,7 +282,12 @@ export default function DailyTaskEditPage({}) {
               }}
             />
           </div>
-          <div className={`flex justify-center`}>
+          <div
+            className={`flex justify-center`}
+            onMouseEnter={() => {
+              if (!editDailyTask) router.push("/");
+            }}
+          >
             <div
               className={`mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[350px] min-w-[350px] rounded-lg`}
               style={{
@@ -226,7 +306,7 @@ export default function DailyTaskEditPage({}) {
                       // }}
                     />
                     <p className="text-[13px]">
-                      {editDailyTask.length.minutesElapsed}
+                      {editDailyTask.length.minutesElapsed || 0}
                     </p>
                   </div>
                 </div>
@@ -241,7 +321,7 @@ export default function DailyTaskEditPage({}) {
                       // }}
                     />
                     <p className="text-[13px]">
-                      {editDailyTask.length.minutes}
+                      {data.length.minutes}
                     </p>
                   </div>
                 </div>
@@ -260,10 +340,16 @@ export default function DailyTaskEditPage({}) {
                     <p className="font-medium text-[15px]">Seconds</p>
                   </div>
                 </div>
-                <div className={`flex flex-row items-center gap-4 justify-center `}>
+                <div
+                  className={`flex flex-row items-center gap-4 justify-center `}
+                >
                   <BsStopCircle
                     size={40}
-                    className={`cursor-pointer text-red-800 ${isTimerPlayed.recentlyClicked === "pause" ? "cursor-not-allowed text-gray-400": ""}`}
+                    className={`cursor-pointer text-red-800 ${
+                      isTimerPlayed.recentlyClicked === "pause"
+                        ? "cursor-not-allowed text-gray-400"
+                        : ""
+                    }`}
                     // color="blue"
                     onClick={() => {
                       setIsTimerPlayed({
