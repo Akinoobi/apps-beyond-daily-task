@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { shallow } from "zustand/shallow";
 import { DailyTaskStateManager } from "../api/DailyTaskStateManager";
 import { AiFillEdit, AiOutlinePauseCircle } from "react-icons/ai";
@@ -19,7 +19,7 @@ export default function DailyTaskEditPage({}) {
   const [openModal, setOpenModal] = useState(false);
   const [isTimerPlayed, setIsTimerPlayed] = useState({
     play: false,
-    recentlyClicked: "",
+    recentlyClicked: "pause",
   });
   const { width } = useWindowSize();
   const [form, editTask] = DailyTaskStateManager(
@@ -37,63 +37,67 @@ export default function DailyTaskEditPage({}) {
     editTask(editDailyTask);
     setOpenModal(false);
   };
-  const startTimer = (status) => {
-    setIsTimerPlayed({
-      ...isTimerPlayed,
-      recentlyClicked: status
-    })
-    if (["resume", "playNow"].includes(status)) {
-      let minutes = editDailyTask.length.minutes;
-      let seconds = editDailyTask.length.seconds;
-      let minutesElapsed = editDailyTask.length.minutesElapsed;
-      let myInterval = setInterval(() => {
-        if (seconds > 0) {
-          seconds = Number(seconds - 1);
-          setEditDailyTask((prev) => {
-            let item = prev;
-            item.id = Number(id);
-            item.length.seconds = seconds;
+  let previousTime = useRef(0);
+  let streamDuration = useRef(0);
+  let requestAnimationFrameId = useRef(null);
+  const [renderedDuration, setRenderedStreamDuration] = useState()
 
-            return item;
-          });
-          editTask(editDailyTask);
-        }
+  const updateTimer = useCallback(() => {
+    let minutes = editDailyTask.length.minutes;
+    let seconds = editDailyTask.length.seconds;
+    let minutesElapsed = editDailyTask.length.minutesElapsed;
+    let now = performance.now();
+    let dt = now - previousTime.current;
+    if (dt >= 1000) {
+      streamDuration.current = streamDuration.current + Math.round(dt / 1000);
+      const formattedStreamDuration = new Date(streamDuration.current * 1000)
+        .toISOString()
+        .substr(11, 8);
+      setRenderedStreamDuration(formattedStreamDuration)
+      previousTime.current = now;
+      seconds = seconds - 1
+      setEditDailyTask((prev) => {
+        let item = prev;
+        item.id = Number(id);
+        item.length.seconds = seconds;
 
-        if (seconds === 0) {
-          if (minutes === 0) {
-            clearInterval(myInterval);
-          } else {
-            // setEditDailyTask({
-            //   ...editDailyTask.length,
-            //   id: Number(editDailyTask.id),
-            //   length: {
-            //     minutes: Number(editDailyTask.length.minutes - 1),
-            //     seconds: 59,
-            //   },
-            // });
-            minutes = Number(minutes - 1);
-            seconds = 59;
-            minutesElapsed = Number(minutesElapsed + 1);
-            setEditDailyTask((prev) => {
-              let item = prev;
-              item.id = Number(id);
-              (item.length.minutes = minutes),
-                (item.length.seconds = seconds),
-                (item.length.minutesElapsed = minutesElapsed);
+        return item;
+      });
+      if (seconds === 0) {
+        minutes = Number(minutes - 1);
+        seconds = 59;
+        minutesElapsed = Number(minutesElapsed + 1);
+        setEditDailyTask((prev) => {
+          let item = prev;
+          item.id = Number(id);
+          item.length.minutes = minutes,
+          item.length.seconds = seconds,
+          item.length.minutesElapsed = minutesElapsed
 
-              return item;
-            });
-            editTask(editDailyTask);
-          }
-        }
-        console.log("test", editDailyTask, "form", form);
-      }, 1000);
+          return item;
+        });
+      }
+      editTask(editDailyTask);
+
     }
-    return () => {
-      clearInterval(myInterval);
-    };
-  };
-  console.log("isTimerPlayed", isTimerPlayed);
+    requestAnimationFrameId.current = requestAnimationFrame(updateTimer);
+  }, []);
+  const startTimer = useCallback(() => {
+    previousTime.current = performance.now();
+    requestAnimationFrameId.current = requestAnimationFrame(updateTimer);
+  }, [updateTimer]);
+  useEffect(() => {
+    if (isTimerPlayed.recentlyClicked !== "pause") {
+      startTimer()
+    }
+    if (isTimerPlayed.recentlyClicked === "pause") {
+      streamDuration.current = 0;
+      cancelAnimationFrame(requestAnimationFrameId.current);
+      setRenderedStreamDuration("00:00:00");
+    }
+
+  }, [isTimerPlayed.recentlyClicked])
+  console.log("isTimerPlayed.recentlyClicked", isTimerPlayed.recentlyClicked);
   return (
     <>
       <Modal
@@ -140,7 +144,7 @@ export default function DailyTaskEditPage({}) {
               });
             }}
           />
-            <div className="flex flex-row items-center transition-all border-2 border-gray-700 rounded-md p-2 w-2/3">
+          <div className="flex flex-row items-center transition-all border-2 border-gray-700 rounded-md p-2 w-2/3">
             <input
               type="text"
               name="theme"
@@ -155,7 +159,7 @@ export default function DailyTaskEditPage({}) {
               onChange={(e) => {
                 setEditDailyTask({
                   ...editDailyTask,
-                  theme:  e.rgba,
+                  theme: e.rgba,
                 });
               }}
               className="transition"
@@ -207,7 +211,7 @@ export default function DailyTaskEditPage({}) {
             <div
               className={`mt-10 p-6 max-h-[500px] min-h-[500px] max-w-[350px] min-w-[350px] rounded-lg`}
               style={{
-                background: `${data?.theme}`
+                background: `${data?.theme}`,
               }}
             >
               <div className="flex flex-row justify-between">
@@ -249,16 +253,17 @@ export default function DailyTaskEditPage({}) {
                     <p>{`${editDailyTask?.length.minutes}`}</p>
                     <p className="-mt-1">{" : "}</p>
                     <p>{`${editDailyTask?.length.seconds}`}</p>
+                    <p className="hidden">{renderedDuration}</p>
                   </div>
                   <div className="pl-1 -mt-3 flex flex-row items-center justify-between w-1/2">
                     <p className="font-medium text-[15px]">Minutes</p>
                     <p className="font-medium text-[15px]">Seconds</p>
                   </div>
                 </div>
-                <div className="flex flex-row items-center gap-4 justify-center">
+                <div className={`flex flex-row items-center gap-4 justify-center `}>
                   <BsStopCircle
                     size={40}
-                    className={"cursor-pointer text-red-800"}
+                    className={`cursor-pointer text-red-800 ${isTimerPlayed.recentlyClicked === "pause" ? "cursor-not-allowed text-gray-400": ""}`}
                     // color="blue"
                     onClick={() => {
                       setIsTimerPlayed({
@@ -266,7 +271,6 @@ export default function DailyTaskEditPage({}) {
                         play: false,
                         recentlyClicked: "pause",
                       });
-                      startTimer("pause");
                     }}
                   />
                   <BsPlayCircle
@@ -279,7 +283,6 @@ export default function DailyTaskEditPage({}) {
                         play: true,
                         recentlyClicked: "playNow",
                       });
-                      startTimer("playNow");
                     }}
                   />
                   <AiOutlinePauseCircle
@@ -292,7 +295,6 @@ export default function DailyTaskEditPage({}) {
                         play: true,
                         recentlyClicked: "resume",
                       });
-                      startTimer("resume");
                     }}
                   />
                 </div>
