@@ -40,6 +40,7 @@ export default function DailyTaskEditPage({}) {
   const [error, setError] = useState([]);
 
   const onSaveEdit = () => {
+    console.log("editDailyTask length", editDailyTask);
     if (!editDailyTask.title) {
       setError((prev) => {
         let temp = [...prev];
@@ -321,7 +322,7 @@ export default function DailyTaskEditPage({}) {
                       // }}
                     />
                     <p className="text-[13px]">
-                      {data.length.minutes}
+                      {editDailyTask?.length?.minutes || 0}
                     </p>
                   </div>
                 </div>
