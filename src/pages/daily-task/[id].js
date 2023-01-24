@@ -337,7 +337,7 @@ export default function DailyTaskEditPage({}) {
                   <div className="text-[40px] font-medium flex flex-row  justify-between w-1/2">
                     <p>{`${editDailyTask?.length.minutes}`}</p>
                     <p className="-mt-1">{" : "}</p>
-                    <p>{`${editDailyTask?.length.seconds}`}</p>
+                    <p>{editDailyTask?.length.seconds === 0 ? 0 + `${editDailyTask?.length.seconds}` : editDailyTask?.length.seconds}</p>
                     <p className="hidden">{renderedDuration}</p>
                   </div>
                   <div className="pl-1 -mt-3 flex flex-row items-center justify-between w-1/2">
