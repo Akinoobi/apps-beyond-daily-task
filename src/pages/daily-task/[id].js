@@ -20,6 +20,7 @@ export default function DailyTaskEditPage({}) {
   const [isTimerPlayed, setIsTimerPlayed] = useState({
     play: false,
     recentlyClicked: "pause",
+    isFirstClick: false,
   });
   const { width } = useWindowSize();
   const [form, editTask] = DailyTaskStateManager(
@@ -346,37 +347,49 @@ export default function DailyTaskEditPage({}) {
                 >
                   <BsStopCircle
                     size={40}
-                    className={`cursor-pointer text-red-800 ${
-                      isTimerPlayed.recentlyClicked === "pause"
+                    className={` ${
+                      isTimerPlayed.recentlyClicked === "pause" 
                         ? "cursor-not-allowed text-gray-400"
-                        : ""
+                        : "cursor-pointer text-red-800"
                     }`}
                     // color="blue"
                     onClick={() => {
-                      setIsTimerPlayed({
-                        ...isTimerPlayed,
-                        play: false,
-                        recentlyClicked: "pause",
-                      });
+                      if (isTimerPlayed.recentlyClicked !== "pause" && isTimerPlayed.isFirstClick) {
+                        setIsTimerPlayed({
+                          ...isTimerPlayed,
+                          play: false,
+                          recentlyClicked: "pause",
+                        });
+                      }
                     }}
                   />
                   <BsPlayCircle
                     size={80}
-                    className={"cursor-pointer"}
-                    color="blue"
+                    className={` ${
+                      isTimerPlayed.isFirstClick
+                        ? "cursor-not-allowed text-gray-400"
+                        : "cursor-pointer text-blue-800"
+                    }`}
                     onClick={() => {
+                      if (!isTimerPlayed.isFirstClick)
                       setIsTimerPlayed({
                         ...isTimerPlayed,
                         play: true,
                         recentlyClicked: "playNow",
+                        isFirstClick: true,
                       });
                     }}
                   />
                   <AiOutlinePauseCircle
                     size={40}
-                    className={"cursor-pointer text-gray-400"}
+                    className={` ${
+                      isTimerPlayed.recentlyClicked === "resume" && isTimerPlayed.isFirstClick  || !isTimerPlayed.isFirstClick || (isTimerPlayed.isFirstClick && isTimerPlayed.play) 
+                        ? "cursor-not-allowed text-gray-400"
+                        : "cursor-pointer text-red-800"
+                    }`}
                     // color="blue"
                     onClick={() => {
+                      if (isTimerPlayed.recentlyClicked === "pause")
                       setIsTimerPlayed({
                         ...isTimerPlayed,
                         play: true,
