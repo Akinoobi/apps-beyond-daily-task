@@ -7,7 +7,7 @@ export const DailyTaskStateManager = create((set) => ({
       title: "Design the app",
       length: {
         minutes: 120,
-        seconds: 60,
+        seconds: 22,
         minutesElapsed: 0
       },
       theme: "rgba(148,147,141,1)",
@@ -17,7 +17,7 @@ export const DailyTaskStateManager = create((set) => ({
       title: "Mobile devs sync",
       length: {
         minutes: 30,
-        seconds: 60,
+        seconds: 30,
         minutesElapsed: 0
       },
       theme: "rgba(230,183,177,1)",
@@ -27,7 +27,7 @@ export const DailyTaskStateManager = create((set) => ({
       title: "Design the app",
       length: {
         minutes: 60,
-        seconds: 60,
+        seconds: 20,
         minutesElapsed: 0
       },
       theme: "rgba(219,195,232,1)",

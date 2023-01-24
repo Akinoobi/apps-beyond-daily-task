@@ -95,6 +95,7 @@ export default function DailyTaskEditPage({}) {
         .substr(11, 8);
       setRenderedStreamDuration(formattedStreamDuration);
       previousTime.current = now;
+
       if (seconds > 0) {
         seconds = seconds - 1;
 
@@ -148,6 +149,8 @@ export default function DailyTaskEditPage({}) {
     e.preventDefault();
     e.returnValue = "";
   };
+  console.log("isTimerPlayed", isTimerPlayed, "renderedDuration");
+
   return (
     <>
       <Modal
